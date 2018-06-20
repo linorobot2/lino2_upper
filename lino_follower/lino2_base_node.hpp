@@ -1,5 +1,5 @@
-#ifndef LINOBASENODE_H_
-#define LINOBASENODE_H_
+#ifndef LINO_BASE_NODE_H_
+#define LINO_BASE_NODE_H_
 
 // RCL
 #include "rclcpp/rclcpp.hpp"
@@ -9,30 +9,19 @@
 //#include "sensor_msgs/msg/imu.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 
-// ROS1 Dependencies
-#include "tf2/LinearMath/Quartenion.h"
-#include "tf2_ros/transform_broadcaster.h"
+// Lino Msg
+#include "lino_msgs/msg/velocities.hpp"
 
 class LinoBase: public rclcpp::Node
 {
 public:
     LinoBase():
-    Node('base_controller'),
-    rate(10.0),
-    x_pos(0.0),
-    y_pos(0.0),
-    theta(0.0)
-    {
-    }
-    void velCallBack(const lino_msgs::Velocities& vel);
-    void IMUCallBack(const sensor_msgs::Imu& imu);
+    
 private:
-    rclcpp::TimerBase::SharedPtr timer_;
+    rclcpp::TimerBase::SharedPtr odom_timer;
     rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub;
-    // RAW_VEL subscriber
-    // NAV_MSG subscriber
-
-    tf::TransformBroadcaster odom_broadcaster;
+    rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr imu_sub;
+    rclcpp::Subscription<lino_msgs::msg::Velocities>::SharedPtr vel_sub;
 
     double rate;
     double x_pos;
@@ -41,4 +30,4 @@ private:
 
 };
 
-#endif /* LINOBASENODE_H_ */
+#endif /* LINO_BASE_NODE_H_ */
