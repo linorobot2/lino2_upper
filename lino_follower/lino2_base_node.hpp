@@ -1,7 +1,7 @@
 #ifndef LINO_BASE_NODE_H_
 #define LINO_BASE_NODE_H_
 
-#include <chrono>
+#include <string>
 
 // RCL
 #include "rclcpp/rclcpp.hpp"
@@ -24,7 +24,8 @@ private:
 
     double x_pos;
     double y_pos;
-    double theta;
+    std::string odom_frame;
+    std::string base_link;
 
 };
 
