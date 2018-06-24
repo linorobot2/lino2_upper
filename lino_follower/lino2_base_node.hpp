@@ -6,9 +6,6 @@
 // RCL
 #include "rclcpp/rclcpp.hpp"
 
-// Msg 
-#include "nav_msgs/msg/odometry.hpp"
-
 // Lino Msg
 #include "lino_msgs/msg/velocities.hpp"
 
@@ -18,15 +15,7 @@ public:
     LinoBase();
     
 private:
-    rclcpp::TimerBase::SharedPtr odom_timer;
-    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub;
     rclcpp::Subscription<lino_msgs::msg::Velocities>::SharedPtr vel_sub;
-
-    double x_pos;
-    double y_pos;
-    std::string odom_frame;
-    std::string base_link;
-
 };
 
 #endif /* LINO_BASE_NODE_H_ */
