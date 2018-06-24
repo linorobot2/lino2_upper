@@ -1,6 +1,15 @@
+/*
+ * To use navigation stack in ROS, robot must satisfy the following requirement
+ * 1) Relationship of joints (tf) by odom_pub
+ * 2) Linear/angular velocities by local planner -> vel -> base controller
+ * Optional:
+ * 1) sensor_mgs(imu/laser/pointcloud) for recovery behavior
+ */
+
 // Standard Dependecies
 #include <iostream>
 #include <string.h>
+#include <chrono>
 
 #include "lino2_base_node.hpp"
 
@@ -25,6 +34,8 @@ static double g_imu_z;
 //static rclcpp::Time g_last_vel_time(0.0);
 //static rclcpp::Time g_last_imu_time(0.0);
 
+// What is ecl namespace? use for pose
+
 using namespace std::chrono_literals;
 
 /* LinoBase Constructor */
@@ -35,28 +46,29 @@ LinoBase::LinoBase(): Node("base"), x_pos(0.0), y_pos(0.0), theta(0.0)
         odom_pub = this->create_publisher<nav_msgs::msg::Odometry>("odom");
         auto odom_callback =
             [this]() -> void {
-                auto odom = nav_msgs::msg::Odometry();
-                //odom.header.stamp = current_time;
-                odom.header.frame_id = "odom";
+                auto odom_msg = std::make_shared<nav_msgs::msg::Odometry>();
+                //rcutils_time_point_value_t now;
+                //odom_msg->header.stamp = RCL_NS_TO_S(now);
+                odom_msg->header.frame_id = "odom";
                 /* robot's position in x,y, and z */
-                odom.pose.pose.position.x = x_pos;
-                odom.pose.pose.position.y = y_pos;
-                odom.pose.pose.position.z = 0.0;
+                odom_msg->pose.pose.position.x = x_pos;
+                odom_msg->pose.pose.position.y = y_pos;
+                odom_msg->pose.pose.position.z = 0.0;
                 /* robot's heading in quaternion */
                 //odom.pose.pose.orientation = odom_quat;
 
-                odom.child_frame_id = "base_footprint";
+                odom_msg->child_frame_id = "base_footprint";
                 /* linear speed from encoders */
                 //odom.twist.twist.linear.x = linear_velocity_x;
                 //odom.twist.twist.linear.y = linear_velocity_y;
-                odom.twist.twist.linear.z = 0.0;
+                odom_msg->twist.twist.linear.z = 0.0;
 
-                odom.twist.twist.angular.x = 0.0;
-                odom.twist.twist.angular.y = 0.0;
+                odom_msg->twist.twist.angular.x = 0.0;
+                odom_msg->twist.twist.angular.y = 0.0;
                 /* angular speed from IMU */
-                odom.twist.twist.angular.z = g_imu_z;
+                odom_msg->twist.twist.angular.z = g_imu_z;
 
-                this->odom_pub->publish(odom);
+                this->odom_pub->publish(odom_msg);
             };
         
         // Rate
