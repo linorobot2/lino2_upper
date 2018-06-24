@@ -14,13 +14,21 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
+find_package(lino_msgs REQUIRED)
 #find_package(teleop_twist_keyboard REQUIRED)
 
-add_executable(follower follower.cpp)
-ament_target_dependencies(follower rclcpp geometry_msgs nav_msgs)
+message(STATUS "Starting lino2 build ..")
+file(GLOB LINO_SOURCES 
+  lino2_main.cpp
+  lino2_base_node.cpp
+  lino2_base_node.hpp
+)
+
+add_executable(lino_node ${LINO_SOURCES})
+ament_target_dependencies(lino_node rclcpp geometry_msgs nav_msgs lino_msgs)
 
 install(TARGETS
-  follower
+  lino_node
   DESTINATION lib/${PROJECT_NAME}
 )
 
