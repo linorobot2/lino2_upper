@@ -19,15 +19,23 @@
     
 using namespace std::chrono_literals;
 
-int main(int argc, char** argv)    
+int main(int argc, char * argv[])    
 {
+    static double g_imu_z;
+    double x_pos = 0.0;
+    double y_pos = 0.0;
+    std::string odom_frame = "odom";
+    std::string base_link = "base_footprint";
+    
     rclcpp::init(argc, argv);   // init ros node
     auto node = rclcpp::Node::make_shared("lino_tf");  // create node
+
     auto odom_pub = node->create_publisher<nav_msgs::msg::Odometry>("odom");    
-    auto odom_msg = std::make_shared<nav_msgs::msg::Odometry>();    
+    
+    auto odom_msg = std::make_shared<nav_msgs::msg::Odometry>();
+    auto odom_tf_msg = std::make_shared<geometry_msgs::msg::TransformStamped>();    
 
-    rclcpp::WallRate loop_rate(1);  // timer
-
+    rclcpp::WallRate loop_rate(20);  // timer
             
     //rcutils_time_point_value_t now;
     //odom_msg->header.stamp = RCL_NS_TO_S(now);
@@ -56,8 +64,6 @@ int main(int argc, char** argv)
     odom_msg->twist.twist.angular.z = g_imu_z;
 
     odom_pub->publish(odom_msg);
-
-    auto odom_tf_msg = std::make_shared<geometry_msgs::msg::TransformStamped>();
                 
     tf2_ros::TransformBroadcaster br(node);
 
@@ -72,5 +78,5 @@ int main(int argc, char** argv)
     odom_tf_msg->transform.rotation.z = quat.z();
     odom_tf_msg->transform.rotation.w = quat.w();
 
-    //br.sendTransform(*odom_tf_msg);
+    br.sendTransform(*odom_tf_msg);
 }

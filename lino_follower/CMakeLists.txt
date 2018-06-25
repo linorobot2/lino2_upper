@@ -15,6 +15,7 @@ find_package(rclcpp REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(lino_msgs REQUIRED)
 find_package(tf2 REQUIRED)
+find_package(tf2_ros REQUIRED)
 find_package(geometry_msgs REQUIRED)
 #find_package(teleop_twist_keyboard REQUIRED)
 
@@ -26,10 +27,14 @@ file(GLOB LINO_SOURCES
 )
 
 add_executable(lino_node ${LINO_SOURCES})
-ament_target_dependencies(lino_node rclcpp nav_msgs lino_msgs tf2 geometry_msgs)
+add_executable(lino_tf lino2_tf.cpp)
+
+ament_target_dependencies(lino_node rclcpp lino_msgs)
+ament_target_dependencies(lino_tf rclcpp nav_msgs geometry_msgs tf2 tf2_ros)
 
 install(TARGETS
   lino_node
+  lino_tf
   DESTINATION lib/${PROJECT_NAME}
 )
 

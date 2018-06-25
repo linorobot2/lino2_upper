@@ -13,8 +13,6 @@
 static double g_vel_x;
 static double g_vel_y;
 //static double g_vel_dt;
-    
-static double g_imu_z;
 //static double g_imu_dt;
 
 
