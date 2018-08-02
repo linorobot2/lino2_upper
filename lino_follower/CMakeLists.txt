@@ -20,21 +20,19 @@ find_package(geometry_msgs REQUIRED)
 #find_package(teleop_twist_keyboard REQUIRED)
 
 message(STATUS "Starting lino2 build ..")
-file(GLOB LINO_SOURCES 
+set(LINO_SOURCES 
   lino2_main.cpp
   lino2_base_node.cpp
-  lino2_base_node.hpp
 )
 
 add_executable(lino_node ${LINO_SOURCES})
-add_executable(lino_tf lino2_tf.cpp)
+#add_executable(lino_tf lino2_tf.cpp)
 
 ament_target_dependencies(lino_node rclcpp lino_msgs)
-ament_target_dependencies(lino_tf rclcpp nav_msgs geometry_msgs tf2 tf2_ros)
+#ament_target_dependencies(lino_tf rclcpp nav_msgs geometry_msgs tf2 tf2_ros)
 
 install(TARGETS
   lino_node
-  lino_tf
   DESTINATION lib/${PROJECT_NAME}
 )
 
